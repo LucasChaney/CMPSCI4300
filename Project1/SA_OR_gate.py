@@ -4,10 +4,28 @@ import random
 def cost_function(state):
     #Define the cost based on how well the state simulate the OR gate
     # Compare outputs against the OR truth table
+    Wx, Wy, Wb = state
+    truth_table = [((0,0),0),
+                    ((0,1),1),
+                    ((1,0),1),
+                    ((1,1),1)]
+    cost = 0.0
+    for (x,y), target in truth_table:
+        net_input = Wx * x + Wy * y + Wb
+        #sigmoid activation function
+        output = 1 / (1 + math.exp(-net_input))
+        error += (target - output) ** 2
     return cost
 
-def neighbor(state):
+def neighbor(state, step_size = 0.1):
     #Return a slightly modified version of the state
+    Wx, Wy, Wb = state
+    # Generate random changes for eachweight in range of -step_size to step_size
+    new_Wx = Wx + random.uniform(-step_size, step_size)
+    new_Wy = Wy + random.uniform(-step_size, step_size)
+    new_Wb = Wb + random.uniform(-step_size, step_size)
+
+    new_state = (new_Wx, new_Wy, new_Wb)
     return new_state
 
 def acceptance_probability(old_cost, new_cost, temperature):
@@ -17,8 +35,10 @@ def acceptance_probability(old_cost, new_cost, temperature):
         return math.exp((old_cost - new_cost) / temperature)
     
 # Initial state, temperature, and parameters
-current_state = initial_state #Define initial configuration
-temperature = initial_temperature #ex 100.0
+initial_state = (0,0,0)
+initial_temperature = 100.0
+current_state = initial_state 
+temperature = initial_temperature 
 cooling_rate = 0.95
 min_temperature = 1e-3
 
