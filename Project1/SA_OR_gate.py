@@ -14,7 +14,7 @@ def cost_function(state):
         net_input = Wx * x + Wy * y + Wb
         #sigmoid activation function
         output = 1 / (1 + math.exp(-net_input))
-        error += (target - output) ** 2
+        cost += (target - output) ** 2
     return cost
 
 def neighbor(state, step_size = 0.1):
