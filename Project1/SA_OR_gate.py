@@ -94,10 +94,12 @@ print("OR gate outputs: ")
 for key, value in outputs.items():
     print(f"Input {key}: Output = {value:.5f}")
 
+#PLot history
 iters = [h[0] for h in history]
 temps = [h[1] for h in history]
 best_costs = [h[2] for h in history]
 
+#Data visualizatioins
 plt.figure(figsize=(14,4))
 
 plt.subplot(1,2,1)
