@@ -35,7 +35,7 @@ def acceptance_probability(old_cost, new_cost, temp):
     else:
         return math.exp((old_cost - new_cost) / temp)
 
-def temp_schedule(t, T0, method="logarithmic"):
+def temp_schedule(t, T0, method):
     if method == "logarithmic":
         return T0 / math.log(1+t)
     elif method == "linear":
