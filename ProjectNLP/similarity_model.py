@@ -3,17 +3,17 @@
 # actually score for the methods needed for the project. Just a secondary
 # testing method to check my scores.
 
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer, util
+import pandas as pd
 
-# Load the dataset
+# Load your CSV
 df = pd.read_csv("nlp_project_train.csv")
 
+# Load the transformer model once (globally)
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 def compare_essays_by_id(id1, id2, df):
+    # Lookup essays by ID
     essay1_row = df[df["Essay_ID"] == id1]
     essay2_row = df[df["Essay_ID"] == id2]
 
@@ -23,17 +23,18 @@ def compare_essays_by_id(id1, id2, df):
     essay1 = essay1_row["Essay_Text"].values[0]
     essay2 = essay2_row["Essay_Text"].values[0]
 
-    vectorizer = TfidfVectorizer()
-    vectors = vectorizer.fit_transform([essay1, essay2])
-    score = cosine_similarity(vectors[0:1], vectors[1:2])[0][0]
+    # === SentenceTransformer similarity (THIS IS WHERE IT GOES) ===
+    embeddings = model.encode([essay1, essay2])
+    score = util.cos_sim(embeddings[0], embeddings[1]).item()
 
+    # Extract first sentences
     first_sentence1 = essay1.strip().split('.')[0]
     first_sentence2 = essay2.strip().split('.')[0]
 
+    # Output
     print(f"Essay {id1} vs Essay {id2}")
     print(f"Similarity Score: {score:.4f}")
     print(f"Essay 1: {first_sentence1}")
     print(f"Essay 2: {first_sentence2}")
 
-# Example usage:
 compare_essays_by_id("29aa983", "6d25307", df)
